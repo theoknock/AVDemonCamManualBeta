@@ -1,13 +1,13 @@
 {
   "images" : [
     {
-      "filename" : "eye.circle.app.icon.avdemoncammanual.accent-green.png",
+      "filename" : "eye.avdemoncammanual.appicon.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
     },
     {
-      "filename" : "eye.circle.app.icon.avdemoncammanual.accent-green 1.png",
+      "filename" : "eye.avdemoncammanual.appicon 1.png",
       "idiom" : "universal",
       "platform" : "watchos",
       "size" : "1024x1024"
