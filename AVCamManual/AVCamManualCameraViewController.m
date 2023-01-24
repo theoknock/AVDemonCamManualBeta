@@ -302,7 +302,7 @@ static const float kExposureDurationPower = 5.f; // Higher numbers will give the
             double exposureDurationSeconds = CMTimeGetSeconds( self.videoDevice.exposureDuration );
             double minExposureDurationSeconds = CMTimeGetSeconds(CMTimeMakeWithSeconds((1.f / 1000.f), 1000*1000*1000));
             double maxExposureDurationSeconds = CMTimeGetSeconds(CMTimeMakeWithSeconds((1.f / 3.f), 1000*1000*1000));
-            self.exposureDurationSlider.value = property_control_value(exposureDurationSeconds, minExposureDurationSeconds, maxExposureDurationSeconds, 1 / kExposureDurationPower);
+            self.exposureDurationSlider.value = property_control_value(exposureDurationSeconds, minExposureDurationSeconds, maxExposureDurationSeconds, kExposureDurationPower);
             
             self.exposureDurationSlider.enabled = ( self.videoDevice && self.videoDevice.exposureMode == AVCaptureExposureModeCustom);
             
@@ -1083,7 +1083,7 @@ static const float kExposureDurationPower = 5.f; // Higher numbers will give the
             
             dispatch_async( dispatch_get_main_queue(), ^{
                 if ( exposureMode != AVCaptureExposureModeCustom ) {
-                    self.exposureDurationSlider.value = property_control_value(exposureDurationSeconds, minExposureDurationSeconds, maxExposureDurationSeconds, 1 / kExposureDurationPower);
+                    self.exposureDurationSlider.value = property_control_value(exposureDurationSeconds, minExposureDurationSeconds, maxExposureDurationSeconds, kExposureDurationPower);
                 }
             } );
         }
