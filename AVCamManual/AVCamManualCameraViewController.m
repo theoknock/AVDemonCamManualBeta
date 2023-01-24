@@ -306,9 +306,7 @@ static const float kExposureDurationPower = 5.f; // Higher numbers will give the
             
             self.exposureDurationSlider.enabled = ( self.videoDevice && self.videoDevice.exposureMode == AVCaptureExposureModeCustom);
             
-            // To-Do: Use this to set the exposure duration to 1.0/3.0 sans slider
-            // [self.videoDevice setExposureModeCustomWithDuration:kCMTimeInvalid /*CMTimeMakeWithSeconds( (1.0/3.0), 1000*1000*1000 )
-            
+        
             self.ISOSlider.minimumValue = self.videoDevice.activeFormat.minISO;
             self.ISOSlider.maximumValue = self.videoDevice.activeFormat.maxISO;
             self.ISOSlider.value = self.videoDevice.ISO;
@@ -706,7 +704,7 @@ static const float kExposureDurationPower = 5.f; // Higher numbers will give the
 
     double minExposureDurationSeconds = CMTimeGetSeconds(CMTimeMakeWithSeconds((1.f / 1000.f), 1000*1000*1000));
     double maxExposureDurationSeconds = CMTimeGetSeconds(CMTimeMakeWithSeconds((1.f / 3.f), 1000*1000*1000));
-    double exposureDurationSeconds = control_property_value(sender.value, minExposureDurationSeconds, maxExposureDurationSeconds, 3.333f);
+    double exposureDurationSeconds = control_property_value(sender.value, minExposureDurationSeconds, maxExposureDurationSeconds, kExposureDurationPower);
     
     if ( [self.videoDevice lockForConfiguration:&error] ) {
         [self.videoDevice setExposureModeCustomWithDuration:CMTimeMakeWithSeconds( exposureDurationSeconds, 1000*1000*1000 )  ISO:AVCaptureISOCurrent completionHandler:nil];
@@ -1078,13 +1076,14 @@ static const float kExposureDurationPower = 5.f; // Higher numbers will give the
             double newDurationSeconds = CMTimeGetSeconds( [newValue CMTimeValue] );
             AVCaptureExposureMode exposureMode = self.videoDevice.exposureMode;
             
-            double minDurationSeconds = MAX( CMTimeGetSeconds( self.videoDevice.activeFormat.minExposureDuration ), kExposureMinimumDuration );
-            double maxDurationSeconds = 1.0/3.0; //CMTimeGetSeconds( self.videoDevice.activeFormat.maxExposureDuration );
-            // Map from duration to non-linear UI range 0-1
-//            double p = ( newDurationSeconds - minDurationSeconds ) / ( maxDurationSeconds - minDurationSeconds ); // Scale to 0-1
+            double exposureDurationSeconds = CMTimeGetSeconds( self.videoDevice.exposureDuration );
+            double minExposureDurationSeconds = CMTimeGetSeconds(CMTimeMakeWithSeconds((1.f / 1000.f), 1000*1000*1000));
+            double maxExposureDurationSeconds = CMTimeGetSeconds(CMTimeMakeWithSeconds((1.f / 3.f), 1000*1000*1000));
+            
+            
             dispatch_async( dispatch_get_main_queue(), ^{
                 if ( exposureMode != AVCaptureExposureModeCustom ) {
-                    self.exposureDurationSlider.value = pow(property_control_value(newDurationSeconds, minDurationSeconds, maxDurationSeconds, 1.f), kExposureDurationPower); // Apply inverse power
+                    self.exposureDurationSlider.value = property_control_value(exposureDurationSeconds, minExposureDurationSeconds, maxExposureDurationSeconds, 1 / kExposureDurationPower);
                 }
             } );
         }
